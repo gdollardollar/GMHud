@@ -1,0 +1,16 @@
+PODS:
+  - GMHud (0.1.0)
+
+DEPENDENCIES:
+  - GMHud (from `./`)
+
+EXTERNAL SOURCES:
+  GMHud:
+    :path: ./
+
+SPEC CHECKSUMS:
+  GMHud: 1f06f7e808cb691b8a4c4fc6c30af8eb9801bfff
+
+PODFILE CHECKSUM: 0bc8f2facf4429c6c06b05173f2eef919b8ca0e7
+
+COCOAPODS: 1.2.0.beta.1
