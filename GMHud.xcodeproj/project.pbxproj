@@ -13,6 +13,7 @@
 		FF018F7D1DD387D300CC04BA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FF018F751DD387D300CC04BA /* LaunchScreen.storyboard */; };
 		FF018F7E1DD387D300CC04BA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FF018F771DD387D300CC04BA /* Main.storyboard */; };
 		FF018F801DD387D300CC04BA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF018F7A1DD387D300CC04BA /* ViewController.swift */; };
+		FF4784FE1DE53A7C005C7E7E /* InputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4784FD1DE53A7C005C7E7E /* InputViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,8 @@
 		FF018F7A1DD387D300CC04BA /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FF018F861DD3890300CC04BA /* Hud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hud.swift; sourceTree = "<group>"; };
 		FF018F871DD3890300CC04BA /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
+		FF4784FB1DE53A03005C7E7E /* HudSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HudSegue.swift; sourceTree = "<group>"; };
+		FF4784FD1DE53A7C005C7E7E /* InputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +90,7 @@
 				FF018F771DD387D300CC04BA /* Main.storyboard */,
 				FF018F791DD387D300CC04BA /* Info.plist */,
 				FF018F7A1DD387D300CC04BA /* ViewController.swift */,
+				FF4784FD1DE53A7C005C7E7E /* InputViewController.swift */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -96,6 +100,7 @@
 			children = (
 				FF018F861DD3890300CC04BA /* Hud.swift */,
 				FF018F871DD3890300CC04BA /* Manager.swift */,
+				FF4784FB1DE53A03005C7E7E /* HudSegue.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -224,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF4784FE1DE53A7C005C7E7E /* InputViewController.swift in Sources */,
 				FF018F801DD387D300CC04BA /* ViewController.swift in Sources */,
 				FF018F7B1DD387D300CC04BA /* AppDelegate.swift in Sources */,
 			);

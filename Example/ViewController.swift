@@ -14,12 +14,20 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let hud = Hud.loading()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) { 
+    }
+    
+    @IBAction func loading(_ sender: AnyObject?) {
+        let hud = Hud.loading()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
             hud.set(text: "Dude")
         }
-////        let hud = Hud.show(text: "dude")
+
+    }
+    
+    @IBAction func text(_ sender: AnyObject?) {
+        _ = Hud.display(text: "dude")
     }
 
 }

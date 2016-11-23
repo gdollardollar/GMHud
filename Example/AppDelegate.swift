@@ -20,6 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         Hud.coverColor = UIColor.black.withAlphaComponent(0.7)
         Hud.tintColor = .cyan
+        Hud.font = UIFont.systemFont(ofSize: 30)
+        Hud.blurStyle = 1
         
         return true
     }

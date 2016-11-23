@@ -26,7 +26,7 @@ open class Hud: UIViewController {
     @IBInspectable
     public var coverColor: UIColor? = Hud.coverColor {
         didSet {
-            effectView.backgroundColor = coverColor
+            (effectView ?? self.view).backgroundColor = coverColor
         }
     }
     
@@ -57,31 +57,28 @@ open class Hud: UIViewController {
     public static var blurStyle: Int?
 
     @IBInspectable
-    public var blurStyle: Int? = Hud.blurStyle {
+    open var blurStyle: Int? = Hud.blurStyle {
         didSet {
-            guard blurStyle != nil else {
-                effectView.effect = nil
-                return
-            }
-            effectView?.effect = UIBlurEffect(style: UIBlurEffectStyle(rawValue: self.blurStyle!)!)
+            resetEffectView()
         }
     }
     
     public static var font: UIFont?
     
-    public var font: UIFont? = Hud.font {
+    open var font: UIFont? = Hud.font {
         didSet {
             (content as? UILabel)?.font = font
         }
     }
     
     
-    @IBOutlet weak var content: UIView?
+    @IBOutlet public internal(set)
+    weak var content: UIView?
     
     var contentType: ContentType?
     
     @IBOutlet
-    fileprivate weak var effectView: UIVisualEffectView!
+    fileprivate weak var effectView: UIVisualEffectView?
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -94,23 +91,30 @@ open class Hud: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         
-        if effectView == nil {
-            let v = UIVisualEffectView(frame: view.bounds)
-            view.insertSubview(v, at: 0)
-            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-(0)-[v]-(0)-|", options: [],
-                                                               metrics: nil, views: ["v": v]))
-            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(0)-[v]-(0)-|", options: [],
-                                                               metrics: nil, views: ["v": v]))
-            view.translatesAutoresizingMaskIntoConstraints = false
-            effectView = v
-            
-            effectView.backgroundColor = coverColor
-            blurStyle = Hud.blurStyle
-        }
+        resetEffectView()
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(Hud.tapRecognized(sender:)))
         tap.delegate = self
         view.addGestureRecognizer(tap)
+    }
+    
+    private func resetEffectView() {
+        effectView?.removeFromSuperview()
+        
+        guard let blur = UIBlurEffectStyle(rawValue: self.blurStyle ?? -1) else {
+            return
+        }
+        
+        let v = UIVisualEffectView(frame: view.bounds)
+        view.insertSubview(v, at: 0)
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-(0)-[v]-(0)-|", options: [],
+                                                           metrics: nil, views: ["v": v]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(0)-[v]-(0)-|", options: [],
+                                                           metrics: nil, views: ["v": v]))
+        view.translatesAutoresizingMaskIntoConstraints = false
+        effectView = v
+        
+        effectView!.effect = UIBlurEffect(style: blur)
     }
     
     override open func viewWillAppear(_ animated: Bool) {
@@ -135,13 +139,15 @@ open class Hud: UIViewController {
         let completion: (Bool) -> () = { _ in
             oldContent?.removeFromSuperview()
         }
-        effectView.contentView.addSubview(view)
+        
+        let container = effectView?.contentView ?? self.view!
+        container.addSubview(view)
         self.view.addConstraints([
-            NSLayoutConstraint(item: self.view, attribute: .centerX,
+            NSLayoutConstraint(item: container, attribute: .centerX,
                                relatedBy: .equal,
                                toItem: view, attribute: .centerX,
                                multiplier: 1, constant: 0),
-            NSLayoutConstraint(item: self.view, attribute: .centerY,
+            NSLayoutConstraint(item: container, attribute: .centerY,
                                relatedBy: .equal,
                                toItem: view, attribute: .centerY,
                                multiplier: 1, constant: 0)
@@ -176,12 +182,16 @@ extension Hud {
         setContent(view: instantiateLabel(text: text), animated: animated, type: .text)
     }
     
+    public func display() {
+        Manager.instance.display(hud: self)
+    }
+    
     public func dismiss() {
         Manager.instance.dismiss(hud: self)
     }
     
     @discardableResult
-    public func onCover(action action: Action?) -> Hud {
+    public func onCover(action: Action?) -> Hud {
         coverAction = action
         return self
     }
@@ -219,17 +229,21 @@ extension Hud {
     
     open func animateDisplay() {
         
-        if blurStyle == nil {
+        if effectView == nil {
+            
             self.view.alpha = 0
             UIView.animate(withDuration: 0.3) {
                 self.view.alpha = 1
             }
+            
         } else {
-            effectView.effect = nil
+            let effect = effectView!.effect
+            
+            effectView!.effect = nil
             content?.alpha = 0
             UIView.animate(withDuration: 0.3) {
                 self.content?.alpha = 1
-                self.effectView.effect = UIBlurEffect(style: UIBlurEffectStyle(rawValue: self.blurStyle!)!)
+                self.effectView!.effect = effect
             }
         }
     }
@@ -247,7 +261,7 @@ extension Hud {
             
             UIView.animate(withDuration: 0.3, animations: {
                 
-                self.effectView.effect = nil
+                self.effectView!.effect = nil
                 self.content?.alpha = 0
 //                self.alpha = 0
                 
@@ -259,6 +273,7 @@ extension Hud {
                              to: (view: UIView?, type: ContentType?),
                              completion: @escaping (Bool) -> ()) {
         let key = "animateContent"
+        let container = from.view?.superview ?? to.view!.superview!
         
         to.view?.isHidden = true
         
@@ -266,14 +281,14 @@ extension Hud {
         CATransaction.setAnimationDuration(0.3)
         CATransaction.setCompletionBlock { () -> Void in
             
-            self.effectView.contentView.layer.removeAnimation(forKey: key)
+            container.layer.removeAnimation(forKey: key)
             completion(true)
         }
         
         let transition = CATransition()
         transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         transition.type = kCATransitionFade
-        effectView.contentView.layer.add(transition, forKey: key)
+        container.layer.add(transition, forKey: key)
         
         from.view?.isHidden = true
         to.view?.isHidden = false
@@ -285,7 +300,7 @@ extension Hud {
 
 extension Hud: UIGestureRecognizerDelegate {
     
-    open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    open func coverTapShouldBegin(tap: UITapGestureRecognizer) -> Bool {
         switch contentType {
         case .some(.text):
             return true
@@ -294,6 +309,15 @@ extension Hud: UIGestureRecognizerDelegate {
         }
     }
     
+    open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let t = gestureRecognizer as? UITapGestureRecognizer,
+            t.view == self {
+            return coverTapShouldBegin(tap: t)
+        }
+        return true
+    }
+
+
     open func tapRecognized(sender: UITapGestureRecognizer) {
         if coverAction?(self, sender.view!) ?? true {
             dismiss()
