@@ -16,24 +16,34 @@ open class Hud: UIViewController {
         case buttons
         case custom(Int)
     }
-    
+
     public typealias Action = (Hud, UIView) -> (Bool)
     
     fileprivate var coverAction: Action?
     
-    public static var coverColor: UIColor?
+    // ---------------------------------------------------------------------------------
+    // MARK: -
+    
+    public struct Appearance {
+        public var coverColor: UIColor?
+        public var tintColor: UIColor?
+        public var blurStyle: Int?
+        public var font: UIFont?
+        
+        fileprivate init() { }
+    }
+    
+    public static var appearance = Appearance()
     
     @IBInspectable
-    public var coverColor: UIColor? = Hud.coverColor {
+    public var coverColor: UIColor? = Hud.appearance.coverColor {
         didSet {
             (effectView ?? self.view).backgroundColor = coverColor
         }
     }
     
-    public static var tintColor: UIColor?
-    
     @IBInspectable
-    public var tintColor: UIColor? = Hud.tintColor {
+    public var tintColor: UIColor? = Hud.appearance.tintColor {
         didSet {
             view?.tintColor = tintColor
             content?.tintColor = tintColor
@@ -54,22 +64,20 @@ open class Hud: UIViewController {
         }
     }
     
-    public static var blurStyle: Int?
-
     @IBInspectable
-    open var blurStyle: Int? = Hud.blurStyle {
+    open var blurStyle: Int? = Hud.appearance.blurStyle {
         didSet {
             resetEffectView()
         }
     }
     
-    public static var font: UIFont?
-    
-    open var font: UIFont? = Hud.font {
+    open var font: UIFont? = Hud.appearance.font {
         didSet {
             (content as? UILabel)?.font = font
         }
     }
+    
+    // ---------------------------------------------------------------------------------
     
     
     @IBOutlet public internal(set)
@@ -311,7 +319,7 @@ extension Hud: UIGestureRecognizerDelegate {
     
     open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if let t = gestureRecognizer as? UITapGestureRecognizer,
-            t.view == self {
+            t.view == self.view {
             return coverTapShouldBegin(tap: t)
         }
         return true

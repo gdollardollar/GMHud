@@ -18,10 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        Hud.coverColor = UIColor.black.withAlphaComponent(0.7)
-        Hud.tintColor = .cyan
-        Hud.font = UIFont.systemFont(ofSize: 30)
-        Hud.blurStyle = 1
+        Hud.appearance.coverColor = UIColor.black.withAlphaComponent(0.7)
+        Hud.appearance.tintColor = .cyan
+        Hud.appearance.font = UIFont.systemFont(ofSize: 30)
+        Hud.appearance.blurStyle = 1
         
         return true
     }
