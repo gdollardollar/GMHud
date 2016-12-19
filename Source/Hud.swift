@@ -19,16 +19,22 @@ open class Hud: UIViewController {
 
     public typealias Action = (Hud, UIView) -> (Bool)
     
-    fileprivate var coverAction: Action?
+    public static let coverTag = -1
+    
+    fileprivate var action: Action?
     
     // ---------------------------------------------------------------------------------
     // MARK: -
     
+    //TODO: covercolor does nothing for now...
     public struct Appearance {
         public var coverColor: UIColor?
         public var tintColor: UIColor?
         public var blurStyle: Int?
         public var font: UIFont?
+        public var buttonFont: UIFont?
+        public var horizontalSpacing: CGFloat = 40
+        public var verticalSpacing: CGFloat = 10
         
         fileprivate init() { }
     }
@@ -36,45 +42,32 @@ open class Hud: UIViewController {
     public static var appearance = Appearance()
     
     @IBInspectable
-    public var coverColor: UIColor? = Hud.appearance.coverColor {
-        didSet {
-            (effectView ?? self.view).backgroundColor = coverColor
-        }
+    open var coverColor: UIColor? {
+        return Hud.appearance.coverColor
     }
     
-    @IBInspectable
-    public var tintColor: UIColor? = Hud.appearance.tintColor {
-        didSet {
-            view?.tintColor = tintColor
-            content?.tintColor = tintColor
-            
-            guard contentType != nil else {
-                return
-            }
-            
-            switch contentType! {
-            case .loader:
-                (content as? UIActivityIndicatorView)?.color = tintColor
-            case .text:
-                (content as? UILabel)?.textColor = tintColor
-            default:
-                break
-            }
-            
-        }
+    open var tintColor: UIColor? {
+        return Hud.appearance.tintColor
     }
     
-    @IBInspectable
-    open var blurStyle: Int? = Hud.appearance.blurStyle {
-        didSet {
-            resetEffectView()
-        }
+    open var blurStyle: Int? {
+        return Hud.appearance.blurStyle
     }
     
-    open var font: UIFont? = Hud.appearance.font {
-        didSet {
-            (content as? UILabel)?.font = font
-        }
+    open var font: UIFont? {
+        return Hud.appearance.font
+    }
+    
+    open var buttonFont: UIFont? {
+        return Hud.appearance.buttonFont
+    }
+    
+    open var horizontalSpacing: CGFloat {
+        return Hud.appearance.horizontalSpacing
+    }
+    
+    open var verticalSpacing: CGFloat {
+        return Hud.appearance.verticalSpacing
     }
     
     // ---------------------------------------------------------------------------------
@@ -99,11 +92,13 @@ open class Hud: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         
-        resetEffectView()
-        
-        let tap = UITapGestureRecognizer(target: self, action: #selector(Hud.tapRecognized(sender:)))
-        tap.delegate = self
-        view.addGestureRecognizer(tap)
+        if self.storyboard == nil {
+            resetEffectView()
+            let tap = UITapGestureRecognizer(target: self, action: #selector(Hud.tapRecognized(sender:)))
+            tap.delegate = self
+            view.addGestureRecognizer(tap)
+            view.tag = Hud.coverTag
+        }
     }
     
     private func resetEffectView() {
@@ -179,31 +174,49 @@ extension Hud {
     }
     
     @discardableResult
-    public static func display(text: String) -> Hud {
+    public static func display(text: String, buttons: [String] = [], action: Action? = nil) -> Hud {
         let hud = Hud()
-        hud.setContent(view: hud.instantiateLabel(text: text), animated: false, type: .text)
+        hud.set(text: text, buttons: buttons, action: action, animated: false)
         Manager.instance.display(hud: hud)
         return hud
     }
     
-    public func set(text: String, animated: Bool = true) {
-        setContent(view: instantiateLabel(text: text), animated: animated, type: .text)
-    }
-    
-    public func display() {
+    open func display() {
         Manager.instance.display(hud: self)
     }
     
-    public func dismiss() {
+    @IBAction
+    open func dismiss() {
         Manager.instance.dismiss(hud: self)
     }
     
-    @discardableResult
-    public func onCover(action: Action?) -> Hud {
-        coverAction = action
-        return self
+    open func set(text: String, buttons: [String] = [], action: Action? = nil, animated: Bool = true) {
+        let vertical = UIStackView(arrangedSubviews: [instantiateLabel(text: text)])
+        
+        vertical.axis = .vertical
+        vertical.alignment = .center
+        vertical.distribution = .equalSpacing
+        vertical.spacing = verticalSpacing
+        vertical.translatesAutoresizingMaskIntoConstraints = false
+        
+        if !buttons.isEmpty {
+            
+            let horizontal = UIStackView(arrangedSubviews: buttons.enumerated().map({ i, title in
+                let b = self.instantiateButton(title: title)
+                b.tag = i
+                return b
+            }))
+            
+            horizontal.axis = .horizontal
+            horizontal.alignment = .fill
+            horizontal.distribution = .equalSpacing
+            horizontal.spacing = horizontalSpacing
+            vertical.addArrangedSubview(horizontal)
+            
+        }
+        self.action = action
+        setContent(view: vertical, animated: animated, type: .text)
     }
-    
 }
 
 //MARK: - Content
@@ -226,7 +239,23 @@ extension Hud {
         label.numberOfLines = 0
         label.preferredMaxLayoutWidth = view.bounds.width - 100
         label.textAlignment = .center
+        label.font = font
         return label
+    }
+    
+    open func instantiateButton(title: String) -> UIView {
+        let button = UIButton(type: .system)
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(tintColor, for: .normal)
+        button.titleLabel?.font = buttonFont ?? font
+        button.addTarget(self, action: #selector(type(of: self).buttonAction(sender:)), for: .touchUpInside)
+        return button
+    }
+    
+    public func buttonAction(sender: UIView) {
+        if action?(self, sender) ?? true {
+            dismiss()
+        }
     }
     
 }
@@ -258,7 +287,7 @@ extension Hud {
     
     open func animateDismiss(completion: @escaping (Bool) -> ()) {
         
-        if blurStyle == nil {
+        if effectView == nil {
             
             UIView.animate(withDuration: 0.3, animations: {
                 self.view.alpha = 0
@@ -269,7 +298,7 @@ extension Hud {
             
             UIView.animate(withDuration: 0.3, animations: {
                 
-                self.effectView!.effect = nil
+                self.effectView?.effect = nil
                 self.content?.alpha = 0
 //                self.alpha = 0
                 
@@ -327,7 +356,7 @@ extension Hud: UIGestureRecognizerDelegate {
 
 
     open func tapRecognized(sender: UITapGestureRecognizer) {
-        if coverAction?(self, sender.view!) ?? true {
+        if action?(self, sender.view!) ?? true {
             dismiss()
         }
     }

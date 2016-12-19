@@ -11,15 +11,8 @@ import GMHud
 
 class InputViewController: Hud {
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        blurStyle = nil
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override var blurStyle: Int? {
+        return nil
     }
     
     override func animateDisplay() {

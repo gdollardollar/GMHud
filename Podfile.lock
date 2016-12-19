@@ -1,5 +1,5 @@
 PODS:
-  - GMHud (0.1.0)
+  - GMHud (0.1.1)
 
 DEPENDENCIES:
   - GMHud (from `./`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: ./
 
 SPEC CHECKSUMS:
-  GMHud: 1f06f7e808cb691b8a4c4fc6c30af8eb9801bfff
+  GMHud: 950f000b6cb40073193c209ac2349fc922daa4bb
 
 PODFILE CHECKSUM: 0bc8f2facf4429c6c06b05173f2eef919b8ca0e7
 

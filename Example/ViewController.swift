@@ -29,6 +29,18 @@ class ViewController: UIViewController {
     @IBAction func text(_ sender: AnyObject?) {
         _ = Hud.display(text: "dude")
     }
+    
+    @IBAction func textAndButton(_ sender: AnyObject?) {
+        _ = Hud.display(text: "This is a text. It is long to be multiline.", buttons: ["Ok", "This is great"], action: { (hud, view) -> (Bool) in
+            switch view.tag {
+            case Hud.coverTag:
+                print("cover")
+            default:
+                print("index: \(view.tag)")
+            }
+            return true
+        })
+    }
 
 }
 
