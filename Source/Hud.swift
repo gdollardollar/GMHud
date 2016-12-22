@@ -30,7 +30,7 @@ open class Hud: UIViewController {
     public struct Appearance {
         public var coverColor: UIColor?
         public var tintColor: UIColor?
-        public var blurStyle: Int?
+        public var blurStyle: UIBlurEffectStyle?
         public var font: UIFont?
         public var buttonFont: UIFont?
         public var horizontalSpacing: CGFloat = 40
@@ -50,7 +50,7 @@ open class Hud: UIViewController {
         return Hud.appearance.tintColor
     }
     
-    open var blurStyle: Int? {
+    open var blurStyle: UIBlurEffectStyle? {
         return Hud.appearance.blurStyle
     }
     
@@ -92,19 +92,23 @@ open class Hud: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         
-        if self.storyboard == nil {
+        if self.storyboard == nil && self.nibName == nil {
             resetEffectView()
+            
             let tap = UITapGestureRecognizer(target: self, action: #selector(Hud.tapRecognized(sender:)))
             tap.delegate = self
             view.addGestureRecognizer(tap)
+            
             view.tag = Hud.coverTag
+            
+            view.backgroundColor = coverColor
         }
     }
     
     private func resetEffectView() {
         effectView?.removeFromSuperview()
         
-        guard let blur = UIBlurEffectStyle(rawValue: self.blurStyle ?? -1) else {
+        guard let blur = blurStyle else {
             return
         }
         
