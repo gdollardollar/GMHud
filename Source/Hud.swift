@@ -36,6 +36,8 @@ open class Hud: UIViewController {
         public var horizontalSpacing: CGFloat = 40
         public var verticalSpacing: CGFloat = 10
         
+        public var preferredStatusBarStyle: UIStatusBarStyle = .default
+        
         fileprivate init() { }
     }
     
@@ -68,6 +70,10 @@ open class Hud: UIViewController {
     
     open var verticalSpacing: CGFloat {
         return Hud.appearance.verticalSpacing
+    }
+    
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return Hud.appearance.preferredStatusBarStyle
     }
     
     // ---------------------------------------------------------------------------------
