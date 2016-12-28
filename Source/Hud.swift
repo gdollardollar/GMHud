@@ -364,7 +364,7 @@ extension Hud: UIGestureRecognizerDelegate {
         return true
     }
 
-
+    @IBAction
     open func tapRecognized(sender: UITapGestureRecognizer) {
         if action?(self, sender.view!) ?? true {
             dismiss()
