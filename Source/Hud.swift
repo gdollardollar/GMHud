@@ -79,7 +79,7 @@ open class Hud: UIViewController {
     // ---------------------------------------------------------------------------------
     
     
-    @IBOutlet public internal(set)
+    @IBOutlet public
     weak var content: UIView?
     
     var contentType: ContentType?
@@ -182,7 +182,7 @@ extension Hud {
         hud.setContent(view: hud.instantiateLoader(), animated: false, type: .loader)
         return hud
     }
-    
+
     @discardableResult
     public static func display(text: String, buttons: [String] = [], action: Action? = nil) -> Hud {
         let hud = Hud()
@@ -198,6 +198,10 @@ extension Hud {
     @IBAction
     open func dismiss() {
         Manager.instance.dismiss(hud: self)
+    }
+    
+    open func setLoading(animated: Bool = true) {
+        setContent(view: instantiateLoader(), animated: animated, type: .loader)
     }
     
     open func set(text: String, buttons: [String] = [], action: Action? = nil, animated: Bool = true) {
