@@ -82,7 +82,7 @@ open class Hud: UIViewController {
     @IBOutlet public
     weak var content: UIView?
     
-    var contentType: ContentType?
+    public fileprivate(set) var contentType: ContentType?
     
     @IBOutlet
     fileprivate weak var effectView: UIVisualEffectView?
@@ -142,7 +142,7 @@ open class Hud: UIViewController {
         self.animateDisplay()
     }
     
-    public func setContent(view: UIView, animated: Bool, type: ContentType? = nil) {
+    public func set(content view: UIView, animated: Bool, contentMode: UIViewContentMode = .center, type: ContentType? = nil) {
         
         let oldContent = content
         content = view
@@ -155,31 +155,36 @@ open class Hud: UIViewController {
         
         let container = effectView?.contentView ?? self.view!
         container.addSubview(view)
-        self.view.addConstraints([
-            NSLayoutConstraint(item: container, attribute: .centerX,
-                               relatedBy: .equal,
-                               toItem: view, attribute: .centerX,
-                               multiplier: 1, constant: 0),
-            NSLayoutConstraint(item: container, attribute: .centerY,
-                               relatedBy: .equal,
-                               toItem: view, attribute: .centerY,
-                               multiplier: 1, constant: 0)
-            ])
         
+        switch contentMode {
+        case .bottom:
+            container.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-0-[view]-0-|", options: [], metrics: nil, views: ["view": view]))
+            container.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[view]-0-|", options: [], metrics: nil, views: ["view": view]))
+        default:
+            container.addConstraints([
+                NSLayoutConstraint(item: container, attribute: .centerX,
+                                   relatedBy: .equal,
+                                   toItem: view, attribute: .centerX,
+                                   multiplier: 1, constant: 0),
+                NSLayoutConstraint(item: container, attribute: .centerY,
+                                   relatedBy: .equal,
+                                   toItem: view, attribute: .centerY,
+                                   multiplier: 1, constant: 0)
+                ])
+            
+        }
+
         if animated && oldContent != nil {
             animateContent(from: (oldContent!, oldContentType), to: (content!, contentType), completion: completion)
         } else {
             completion(true)
         }
     }
-}
-
-extension Hud {
     
     public static func loading() -> Hud {
         let hud = Hud()
         Manager.instance.display(hud: hud)
-        hud.setContent(view: hud.instantiateLoader(), animated: false, type: .loader)
+        hud.set(content: hud.instantiateLoader(), animated: false, type: .loader)
         return hud
     }
 
@@ -201,7 +206,7 @@ extension Hud {
     }
     
     open func setLoading(animated: Bool = true) {
-        setContent(view: instantiateLoader(), animated: animated, type: .loader)
+        set(content: instantiateLoader(), animated: animated, type: .loader)
     }
     
     open func set(text: String, buttons: [String] = [], action: Action? = nil, animated: Bool = true) {
@@ -229,13 +234,8 @@ extension Hud {
             
         }
         self.action = action
-        setContent(view: vertical, animated: animated, type: .text)
+        set(content: vertical, animated: animated, type: .text)
     }
-}
-
-//MARK: - Content
-
-extension Hud {
     
     open func instantiateLoader() -> UIView {
         let activity = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
@@ -271,12 +271,6 @@ extension Hud {
             dismiss()
         }
     }
-    
-}
-
-
-//MARK: - Animations
-extension Hud {
     
     open func animateDisplay() {
         
