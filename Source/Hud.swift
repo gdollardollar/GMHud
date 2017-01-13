@@ -191,7 +191,7 @@ open class Hud: UIViewController {
     @discardableResult
     public static func display(text: String, buttons: [String] = [], action: Action? = nil) -> Hud {
         let hud = Hud()
-        hud.set(text: text, buttons: buttons, action: action, animated: false)
+        hud.set(text: text, buttons: buttons, animated: false, action: action)
         Manager.instance.display(hud: hud)
         return hud
     }
@@ -209,7 +209,7 @@ open class Hud: UIViewController {
         set(content: instantiateLoader(), animated: animated, type: .loader)
     }
     
-    open func set(text: String, buttons: [String] = [], action: Action? = nil, animated: Bool = true) {
+    open func set(text: String, buttons: [String] = [], animated: Bool = true, action: Action? = nil) {
         let vertical = UIStackView(arrangedSubviews: [instantiateLabel(text: text)])
         
         vertical.axis = .vertical
