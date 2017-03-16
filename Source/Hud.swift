@@ -142,7 +142,7 @@ open class Hud: UIViewController {
         self.animateDisplay()
     }
     
-    public func set(content view: UIView, animated: Bool, contentMode: UIViewContentMode = .center, type: ContentType? = nil) {
+    public func set(content view: UIView, animated: Bool, contentMode: UIViewContentMode = .center, type: ContentType? = nil, action: Action? = nil) {
         
         let oldContent = content
         content = view
@@ -160,7 +160,7 @@ open class Hud: UIViewController {
         case .bottom:
             container.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-0-[view]-0-|", options: [], metrics: nil, views: ["view": view]))
             container.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[view]-0-|", options: [], metrics: nil, views: ["view": view]))
-        default:
+        case .center:
             container.addConstraints([
                 NSLayoutConstraint(item: container, attribute: .centerX,
                                    relatedBy: .equal,
@@ -172,7 +172,13 @@ open class Hud: UIViewController {
                                    multiplier: 1, constant: 0)
                 ])
             
+        default:
+            container.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-0-[view]-0-|", options: [], metrics: nil, views: ["view": view]))
+            container.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: [], metrics: nil, views: ["view": view]))
+            
         }
+        
+        self.action = action
 
         if animated && oldContent != nil {
             animateContent(from: (oldContent!, oldContentType), to: (content!, contentType), completion: completion)
@@ -233,8 +239,7 @@ open class Hud: UIViewController {
             vertical.addArrangedSubview(horizontal)
             
         }
-        self.action = action
-        set(content: vertical, animated: animated, type: .text)
+        set(content: vertical, animated: animated, type: .text, action: action)
     }
     
     open func instantiateLoader() -> UIView {
@@ -266,7 +271,7 @@ open class Hud: UIViewController {
         return button
     }
     
-    public func buttonAction(sender: UIView) {
+    @IBAction public func buttonAction(sender: UIView) {
         if action?(self, sender) ?? true {
             dismiss()
         }
