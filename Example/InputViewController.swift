@@ -11,10 +11,6 @@ import GMHud
 
 class InputViewController: Hud {
     
-    override var blurStyle: Int? {
-        return nil
-    }
-    
     override func animateDisplay() {
         
         let c = view.backgroundColor

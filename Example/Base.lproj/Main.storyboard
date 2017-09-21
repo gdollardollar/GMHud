@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2659" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -93,17 +93,27 @@
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.1058823529" green="0.14901960780000001" blue="0.42745098040000001" alpha="0.80059969190000002" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="dNJ-Lc-xbG" firstAttribute="leading" secondItem="c0c-iP-LwS" secondAttribute="leading" id="Rif-I4-ymO"/>
                             <constraint firstItem="vHz-ab-KbG" firstAttribute="top" secondItem="dNJ-Lc-xbG" secondAttribute="bottom" id="Yo9-CV-jtg"/>
                             <constraint firstAttribute="trailing" secondItem="dNJ-Lc-xbG" secondAttribute="trailing" id="Z4e-BL-gLH"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="ipy-AC-d1h" appends="YES" id="Ldl-fn-zT2"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="content" destination="dNJ-Lc-xbG" id="oGv-zC-ug4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bmt-wb-XlP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="ipy-AC-d1h">
+                    <connections>
+                        <action selector="tapRecognizedWithSender:" destination="5tj-fN-f0E" id="Txh-SH-ygV"/>
+                        <outlet property="delegate" destination="5tj-fN-f0E" id="GUn-qq-mH1"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1612" y="239"/>
         </scene>

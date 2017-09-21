@@ -19,10 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         Hud.appearance.coverColor = UIColor.black.withAlphaComponent(0.7)
-        Hud.appearance.tintColor = .blue
+        Hud.appearance.tintColor = .white
         Hud.appearance.font = UIFont.systemFont(ofSize: 20)
         Hud.appearance.buttonFont = UIFont.boldSystemFont(ofSize: 20)
-        Hud.appearance.blurStyle = 1
+        Hud.appearance.blurStyle = .dark
         
         return true
     }

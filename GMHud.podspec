@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'GMHud'
-  s.version          = '0.1.2'
+  s.version          = '1.0.0'
   s.summary          = 'Full screen popups'
   s.homepage         = 'https://github.com/gdollardollar/gmhud'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }

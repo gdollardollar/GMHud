@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class Hud: UIViewController {
+open class Hud: UIViewController, UIGestureRecognizerDelegate {
     
     public enum ContentType {
         case loader
@@ -345,10 +345,6 @@ open class Hud: UIViewController {
         
         CATransaction.commit()
     }
-    
-}
-
-extension Hud: UIGestureRecognizerDelegate {
     
     open func coverTapShouldBegin(tap: UITapGestureRecognizer) -> Bool {
         switch contentType {
