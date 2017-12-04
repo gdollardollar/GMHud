@@ -26,7 +26,6 @@ final class Manager {
         
         guard displayedHud == nil else {
             hudQueue.append(hud)
-            //TODO: start timer
             return
         }
         
@@ -50,7 +49,11 @@ final class Manager {
         hud.animateDismiss { (f) in
             self.hudWindow?.resignKey()
             self.hudWindow = nil
-            //TODO: start timer
+            
+            if let newHud = self.hudQueue.first {
+                self.hudQueue.remove(at: 0)
+                newHud.display()
+            }
         }
     }
 }

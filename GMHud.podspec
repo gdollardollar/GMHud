@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = 'GMHud'
-  s.version          = '1.0.0'
-  s.summary          = 'Full screen popups'
+  s.version          = '1.0.1'
+  s.summary          = 'Full screen popups library for iOS'
   s.homepage         = 'https://github.com/gdollardollar/gmhud'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Guillaume Aquilina' => 'guillaume.aquilina@gmail.com' }
