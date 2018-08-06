@@ -267,6 +267,8 @@ open class Hud: UIViewController, UIGestureRecognizerDelegate {
         button.setTitle(title, for: .normal)
         button.setTitleColor(tintColor, for: .normal)
         button.titleLabel?.font = buttonFont ?? font
+        button.titleLabel?.numberOfLines = 0
+        button.titleLabel?.textAlignment = .center
         button.addTarget(self, action: #selector(type(of: self).buttonAction(sender:)), for: .touchUpInside)
         return button
     }
