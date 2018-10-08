@@ -30,7 +30,7 @@ open class Hud: UIViewController, UIGestureRecognizerDelegate {
     public struct Appearance {
         public var coverColor: UIColor?
         public var tintColor: UIColor?
-        public var blurStyle: UIBlurEffectStyle?
+        public var blurStyle: UIBlurEffect.Style?
         public var font: UIFont?
         public var buttonFont: UIFont?
         public var horizontalSpacing: CGFloat = 40
@@ -52,7 +52,7 @@ open class Hud: UIViewController, UIGestureRecognizerDelegate {
         return Hud.appearance.tintColor
     }
     
-    open var blurStyle: UIBlurEffectStyle? {
+    open var blurStyle: UIBlurEffect.Style? {
         return Hud.appearance.blurStyle
     }
     
@@ -142,7 +142,7 @@ open class Hud: UIViewController, UIGestureRecognizerDelegate {
         self.animateDisplay()
     }
     
-    public func set(content view: UIView, animated: Bool, contentMode: UIViewContentMode = .center, type: ContentType? = nil, action: Action? = nil) {
+    public func set(content view: UIView, animated: Bool, contentMode: UIView.ContentMode = .center, type: ContentType? = nil, action: Action? = nil) {
         
         let oldContent = content
         content = view
@@ -243,7 +243,7 @@ open class Hud: UIViewController, UIGestureRecognizerDelegate {
     }
     
     open func instantiateLoader() -> UIView {
-        let activity = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+        let activity = UIActivityIndicatorView(style: .whiteLarge)
         activity.color = self.tintColor
         activity.translatesAutoresizingMaskIntoConstraints = false
         activity.startAnimating()
@@ -338,8 +338,8 @@ open class Hud: UIViewController, UIGestureRecognizerDelegate {
         }
         
         let transition = CATransition()
-        transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-        transition.type = kCATransitionFade
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        transition.type = CATransitionType.fade
         container.layer.add(transition, forKey: key)
         
         from.view?.isHidden = true

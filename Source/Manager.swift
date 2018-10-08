@@ -30,7 +30,7 @@ final class Manager {
         }
         
         let window = UIWindow(frame: UIScreen.main.bounds)
-        window.windowLevel = UIWindowLevelNormal
+        window.windowLevel = UIWindow.Level.normal
         window.backgroundColor = .clear
         window.rootViewController = hud
         window.makeKeyAndVisible()
