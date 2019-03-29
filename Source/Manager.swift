@@ -40,7 +40,7 @@ final class Manager {
     
     func dismiss(hud: Hud) {
         guard displayedHud == hud else {
-            if let index = hudQueue.index(of: hud) {
+            if let index = hudQueue.firstIndex(of: hud) {
                 hudQueue.remove(at: index)
             }
             return
