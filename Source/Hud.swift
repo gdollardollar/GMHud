@@ -127,7 +127,7 @@ open class Hud: UIViewController, UIGestureRecognizerDelegate {
         view.translatesAutoresizingMaskIntoConstraints = false
         effectView = v
         
-        effectView!.effect = UIBlurEffect(style: blur)
+        effectView?.effect = UIBlurEffect(style: blur)
     }
     
     override open func viewWillAppear(_ animated: Bool) {
@@ -180,7 +180,7 @@ open class Hud: UIViewController, UIGestureRecognizerDelegate {
         
         self.action = action
 
-        if animated && oldContent != nil {
+        if animated && content != nil && oldContent != nil {
             animateContent(from: (oldContent!, oldContentType), to: (content!, contentType), completion: completion)
         } else {
             completion(true)
@@ -291,11 +291,11 @@ open class Hud: UIViewController, UIGestureRecognizerDelegate {
         } else {
             let effect = effectView!.effect
             
-            effectView!.effect = nil
+            effectView?.effect = nil
             content?.alpha = 0
             UIView.animate(withDuration: 0.3) {
                 self.content?.alpha = 1
-                self.effectView!.effect = effect
+                self.effectView?.effect = effect
             }
         }
     }
@@ -324,6 +324,10 @@ open class Hud: UIViewController, UIGestureRecognizerDelegate {
     open func animateContent(from: (view: UIView?, type: ContentType?),
                              to: (view: UIView?, type: ContentType?),
                              completion: @escaping (Bool) -> ()) {
+        guard from.view?.superview != nil || to.view?.superview != nil else {
+            return
+        }
+
         let key = "animateContent"
         let container = from.view?.superview ?? to.view!.superview!
         
